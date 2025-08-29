@@ -1,8 +1,7 @@
 import asyncio
 import sys
 
-# psycopg ругался, на винде пришлось указать строго set_event_loop_policy
-if sys.platform == "win32":
+if sys.platform.startswith("win"):
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 import pytest

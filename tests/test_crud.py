@@ -99,3 +99,26 @@ async def test_cascade_delete_answers(db_session):
     gone1 = await AnswerCRUD.get_by_id(db_session, answer1.id)
     gone2 = await AnswerCRUD.get_by_id(db_session, answer2.id)
     assert gone1 is None and gone2 is None
+
+
+@pytest.mark.asyncio
+async def test_answers_by_question_id(db_session):
+    # Сначала вопрос
+    q = await QuestionCRUD.create(db_session, QuestionCreateRequest(text="Вопрос для ответа"))
+
+    # Ответы на вопрос
+    answer_data_1 = AnswerCreateRequest(text="Ответ 1", user_id="user1")
+    answer_data_2 = AnswerCreateRequest(text="Ответ 2", user_id="user1")
+    answer_1 = await AnswerCRUD.create(db_session, answer_data_1, q.id)
+    answer_2 = await AnswerCRUD.create(db_session, answer_data_2, q.id)
+    # Проверяем наличие ответов
+    assert answer_1 is not None and answer_2 is not None
+    assert answer_1.text == "Ответ 1" and answer_2.text == "Ответ 2"
+    assert answer_1.question_id == q.id and answer_2.question_id == q.id
+
+    # Получаем все ответы по id вопроса
+    all_a = await AnswerCRUD.get_by_question_id(db_session, q.id)
+    texts = [a.text for a in all_a]
+    assert all_a is not None
+    assert len(all_a) == 2
+    assert "Ответ 1" in texts and "Ответ 2" in texts

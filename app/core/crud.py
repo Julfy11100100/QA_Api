@@ -55,11 +55,6 @@ class AnswerCRUD:
             answer: AnswerCreateRequest,
             question_id: int
     ) -> Optional[Answer]:
-        # Проверяем существование вопроса
-        question = await QuestionCRUD.get_by_id(db, question_id)
-        if not question:
-            return None
-
         db_answer = Answer(
             text=answer.text,
             user_id=answer.user_id,
@@ -78,3 +73,8 @@ class AnswerCRUD:
             await db.commit()
             return True
         return False
+
+    @staticmethod
+    async def get_by_question_id(db: AsyncSession, question_id: int) -> List[Answer]:
+        result = await db.execute(select(Answer).where(Answer.question_id == question_id))
+        return result.scalars().all()

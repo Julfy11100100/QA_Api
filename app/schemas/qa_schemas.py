@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from pydantic import BaseModel, Field
 
@@ -56,3 +57,8 @@ class AnswerCreateResponse(AnswerBase):
     # Для ORM
     class Config:
         from_attributes = True
+
+
+class QuestionWithAnswers(BaseModel):
+    question: QuestionCreateResponse
+    answers: List[AnswerCreateResponse]
