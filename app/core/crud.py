@@ -1,11 +1,9 @@
-from typing import List, Optional
-
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from sqlalchemy.orm import selectinload
-
 from app.models.qa_models import Question, Answer
 from app.schemas.qa_schemas import QuestionCreateRequest, AnswerCreateRequest
+from typing import List, Optional
 
 
 class QuestionCRUD:

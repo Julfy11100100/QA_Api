@@ -1,6 +1,6 @@
 import pytest
-from app.core.crud import QuestionCRUD
-from app.schemas.qa_schemas import QuestionCreateRequest
+from app.core.crud import QuestionCRUD, AnswerCRUD
+from app.schemas.qa_schemas import QuestionCreateRequest, AnswerCreateRequest
 from app.models.qa_models import Question
 
 
@@ -47,3 +47,55 @@ async def test_delete_question(db_session):
     # Удаление несуществующего вопроса
     result = await QuestionCRUD.delete(db_session, 52)
     assert result is False
+
+
+@pytest.mark.asyncio
+async def test_answer_crud_full(db_session):
+    # Сначала вопрос
+    q = await QuestionCRUD.create(db_session, QuestionCreateRequest(text="Вопрос для ответа"))
+    # Ответ вопросу
+    answer_data = AnswerCreateRequest(text="Ответ", user_id="user1")
+    answer = await AnswerCRUD.create(db_session, answer_data, q.id)
+    assert answer is not None
+    assert answer.text == "Ответ"
+    assert answer.user_id == "user1"
+    assert answer.question_id == q.id
+
+    # Получить по id
+    answer_loaded = await AnswerCRUD.get_by_id(db_session, answer.id)
+    assert answer_loaded is not None
+    assert answer_loaded.text == answer.text
+
+    # Попытка создать ответ к несуществующему вопросу
+    fake = await AnswerCRUD.create(db_session, answer_data, 52)
+    assert fake is None
+
+    # Удалить
+    deleted = await AnswerCRUD.delete(db_session, answer.id)
+    assert deleted is True
+    not_found = await AnswerCRUD.get_by_id(db_session, answer.id)
+    assert not_found is None
+
+    # Удалить несуществующий снова
+    deleted2 = await AnswerCRUD.delete(db_session, answer.id)
+    assert deleted2 is False
+
+
+@pytest.mark.asyncio
+async def test_cascade_delete_answers(db_session):
+    # Проверка каскадного удаления
+    question = await QuestionCRUD.create(db_session, QuestionCreateRequest(text="Вопрос?"))
+    answer1 = await AnswerCRUD.create(db_session, AnswerCreateRequest(text="1", user_id="user1"), question.id)
+    answer2 = await AnswerCRUD.create(db_session, AnswerCreateRequest(text="2", user_id="user1"), question.id)
+
+    exists1 = await AnswerCRUD.get_by_id(db_session, answer1.id)
+    exists2 = await AnswerCRUD.get_by_id(db_session, answer2.id)
+    assert exists1 is not None and exists2 is not None
+
+    # Удалить вопрос
+    await QuestionCRUD.delete(db_session, question.id)
+
+    # Ответы должны исчезнуть
+    gone1 = await AnswerCRUD.get_by_id(db_session, answer1.id)
+    gone2 = await AnswerCRUD.get_by_id(db_session, answer2.id)
+    assert gone1 is None and gone2 is None
