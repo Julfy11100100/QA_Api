@@ -16,6 +16,19 @@ class Settings(BaseSettings):
     HOST: str = "0.0.0.0"
     PORT: int = 8000
 
+    # Настройки параметров вопросов и ответов
+    Q_MIN_LENGTH: int = 1
+    Q_MAX_LENGTH: int = 1000
+    A_MIN_LENGTH: int = 1
+    A_MAX_LENGTH: int = 1000
+
+    # Настройка базы данных
+    DATABASE_URL: str = "postgres://postgres:postgres@postgres:5432/app_dbb"
+    POSTGRES_DB: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    PGDATA: str = "/var/lib/postgresql/data/pgdata"
+
     class Config:
         env_file = f"{project_root}/.env"
 
