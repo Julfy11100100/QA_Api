@@ -34,7 +34,7 @@ app = FastAPI(
 
 @app.get("/")
 async def root():
-    return {"message": settings.APP_NAME}
+    return {"message": "API для вопросов и ответов"}
 
 
 app.include_router(question_router)

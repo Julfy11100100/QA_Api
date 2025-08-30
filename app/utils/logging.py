@@ -6,7 +6,7 @@ import os
 from config import settings
 
 
-def get_logger(name: str = None, level=logging.INFO):
+def get_logger(name: str = None, level=settings.LOG_LEVEL):
     # Создание директории логов
     log_dir = settings.LOG_FOLDER
     os.makedirs(log_dir, exist_ok=True)

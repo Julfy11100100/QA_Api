@@ -1,7 +1,9 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import declarative_base
 
-DATABASE_URL = "postgresql+psycopg://postgres:postgres@localhost:5433/app_db"
+from config import settings
+
+DATABASE_URL = settings.DATABASE_URL
 
 # Создание асинхронного движка базы данных
 engine = create_async_engine(DATABASE_URL, echo=True)
@@ -10,7 +12,6 @@ engine = create_async_engine(DATABASE_URL, echo=True)
 AsyncSessionLocal = async_sessionmaker(
     engine, class_=AsyncSession, expire_on_commit=False
 )
-
 
 # Базовый класс для моделей
 Base = declarative_base()

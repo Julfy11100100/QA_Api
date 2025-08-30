@@ -9,6 +9,7 @@ project_root = os.path.dirname(current_path)
 class Settings(BaseSettings):
     # Настройки логгера
     LOG_FOLDER: str = f"{project_root}/logs"
+    LOG_LEVEL: str = "ERROR"
 
     # Настройка FastApi
     APP_NAME: str = "API для вопросов и ответов"
@@ -23,7 +24,7 @@ class Settings(BaseSettings):
     A_MAX_LENGTH: int = 1000
 
     # Настройка базы данных
-    DATABASE_URL: str = "postgres://postgres:postgres@postgres:5432/app_dbb"
+    DATABASE_URL: str = "postgres://postgres:postgres@postgres:5433/app_dbb"
     POSTGRES_DB: str
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
