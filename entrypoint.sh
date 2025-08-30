@@ -11,4 +11,4 @@ APP_IMPORT="${APP_NAME:-app.main:app}"
 BIND_HOST="${HOST:-0.0.0.0}"
 BIND_PORT="${PORT:-8000}"
 
-exec uvicorn "${APP_IMPORT}" --host "${BIND_HOST}" --port "${BIND_PORT}"
+exec uvicorn "${APP_IMPORT}" --host "${BIND_HOST}" --port "${BIND_PORT}" --no-access-log
