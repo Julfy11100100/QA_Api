@@ -1,11 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.crud import QuestionCRUD, AnswerCRUD
 from app.database import get_db
 from app.schemas.qa_schemas import QuestionCreateRequest, QuestionCreateResponse, QuestionWithAnswers, \
     AnswerCreateRequest
-from app.core.crud import QuestionCRUD, AnswerCRUD
 
 router = APIRouter(prefix="/questions", tags=["questions"])
 
@@ -66,6 +67,7 @@ async def add_answer_to_question(
         question_id: int,
         db: AsyncSession = Depends(get_db)
 ):
+    """Добавить ответы на вопрос"""
     question = await QuestionCRUD.get_by_id(db, question_id)
     if not question:
         raise HTTPException(

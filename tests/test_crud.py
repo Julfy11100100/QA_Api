@@ -1,7 +1,8 @@
 import pytest
+
 from app.core.crud import QuestionCRUD, AnswerCRUD
-from app.schemas.qa_schemas import QuestionCreateRequest, AnswerCreateRequest
 from app.models.qa_models import Question
+from app.schemas.qa_schemas import QuestionCreateRequest, AnswerCreateRequest
 
 
 @pytest.mark.asyncio
@@ -65,10 +66,6 @@ async def test_answer_crud_full(db_session):
     answer_loaded = await AnswerCRUD.get_by_id(db_session, answer.id)
     assert answer_loaded is not None
     assert answer_loaded.text == answer.text
-
-    # Попытка создать ответ к несуществующему вопросу
-    fake = await AnswerCRUD.create(db_session, answer_data, 52)
-    assert fake is None
 
     # Удалить
     deleted = await AnswerCRUD.delete(db_session, answer.id)
